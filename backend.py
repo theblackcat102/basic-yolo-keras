@@ -262,13 +262,13 @@ class SqueezeNetFeature(BaseFeatureExtractor):
         x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2), name='pool3')(x)
 
         x = fire_module(x, fire_id=4, squeeze=32, expand=128)
-        x = fire_module(x, fire_id=5, squeeze=32, expand=128)
+        # x = fire_module(x, fire_id=5, squeeze=32, expand=128)
         x = MaxPooling2D(pool_size=(3, 3), strides=(2, 2), name='pool5')(x)
 
         x = fire_module(x, fire_id=6, squeeze=48, expand=192)
-        x = fire_module(x, fire_id=7, squeeze=48, expand=192)
+        # x = fire_module(x, fire_id=7, squeeze=48, expand=192)
         x = fire_module(x, fire_id=8, squeeze=64, expand=256)
-        x = fire_module(x, fire_id=9, squeeze=64, expand=256)
+        # x = fire_module(x, fire_id=9, squeeze=64, expand=256)
 
         self.feature_extractor = Model(input_image, x)  
         # self.feature_extractor.load_weights(SQUEEZENET_BACKEND_PATH)
