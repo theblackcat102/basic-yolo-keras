@@ -80,6 +80,7 @@ def _main_(args):
         valid_imgs, valid_labels = parse_annotation(config['valid']['valid_annot_folder'], 
                                                     config['valid']['valid_image_folder'], 
                                                     config['model']['labels'])
+        print("Using validation images")
     else:
         train_valid_split = int(0.8*len(train_imgs))
         np.random.shuffle(train_imgs)

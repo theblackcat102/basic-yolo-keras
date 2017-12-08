@@ -211,7 +211,7 @@ class MobileNetFeature(BaseFeatureExtractor):
         input_image = Input(shape=(input_size, input_size, 3))
 
         mobilenet = MobileNet(input_shape=(224,224,3), include_top=False)
-        mobilenet.load_weights(MOBILENET_BACKEND_PATH)
+        # mobilenet.load_weights(MOBILENET_BACKEND_PATH)
 
         x = mobilenet(input_image)
 
@@ -271,7 +271,7 @@ class SqueezeNetFeature(BaseFeatureExtractor):
         x = fire_module(x, fire_id=9, squeeze=64, expand=256)
 
         self.feature_extractor = Model(input_image, x)  
-        self.feature_extractor.load_weights(SQUEEZENET_BACKEND_PATH)
+        # self.feature_extractor.load_weights(SQUEEZENET_BACKEND_PATH)
 
     def normalize(self, image):
         image = image[..., ::-1]
