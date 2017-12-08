@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 import argparse
-import os
+import os, glob
 import cv2
 import numpy as np
 from tqdm import tqdm
@@ -77,8 +77,8 @@ def _main_(args):
 
         for i in tqdm(range(nb_frames)):
             _, image = video_reader.read()
-            
             boxes = yolo.predict(image)
+
             image = draw_boxes(image, boxes, config['model']['labels'])
 
             video_writer.write(np.uint8(image))
@@ -86,13 +86,13 @@ def _main_(args):
         video_reader.release()
         video_writer.release()  
     else:
-        image = cv2.imread(image_path)
-        boxes = yolo.predict(image)
-        image = draw_boxes(image, boxes, config['model']['labels'])
-
-        print len(boxes), 'boxes are found'
-
-        cv2.imwrite(image_path[:-4] + '_detected' + image_path[-4:], image)
+        for c, image_name in enumerate(glob.glob(image_path+"/*.jpg")):
+            image = cv2.imread(image_name)
+            boxes = yolo.predict(image)
+            image = draw_boxes(image, boxes, config['model']['labels'])
+            print len(boxes), 'boxes are found'
+            print(image_name[:-4] + '_detected' + image_name[-4:])
+            cv2.imwrite(image_name[:-4] + '_detected' + image_name[-4:], image)
 
 if __name__ == '__main__':
     args = argparser.parse_args()

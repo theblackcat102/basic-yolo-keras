@@ -55,16 +55,19 @@ class YOLO(object):
         else:
             raise Exception('Architecture not supported! Only support Full Yolo, Tiny Yolo, MobileNet, SqueezeNet, VGG16, ResNet50, and Inception3 at the moment!')
 
-        print self.feature_extractor.get_output_shape()    
+        # print self.feature_extractor.get_output_shape()
         self.grid_h, self.grid_w = self.feature_extractor.get_output_shape()        
-        features = self.feature_extractor.extract(input_image)            
+        features = self.feature_extractor.extract(input_image)
 
         # make the object detection layer
+        conv2d = Conv2D(512,(1,1),kernel_initializer='lecun_normal')(feature)
+        norm = BatchNormalization()(conv2d)
+        activate = Activation(LeakyReLU(0.2))(norm)
         output = Conv2D(self.nb_box * (4 + 1 + self.nb_class), 
                         (1,1), strides=(1,1), 
                         padding='same', 
                         name='conv_23', 
-                        kernel_initializer='lecun_normal')(features)
+                        kernel_initializer='lecun_normal')(activate)
         output = Reshape((self.grid_h, self.grid_w, self.nb_box, 4 + 1 + self.nb_class))(output)
         output = Lambda(lambda args: args[0])([output, self.true_boxes])
 
@@ -239,6 +242,8 @@ class YOLO(object):
         self.model.load_weights(weight_path)
 
     def predict(self, image):
+        # from PIL import Image
+        # image = np.array((Image.fromarray(image)).resize((self.input_size, self.input_size), Image.ANTIALIAS))
         image = cv2.resize(image, (self.input_size, self.input_size))
         image = self.feature_extractor.normalize(image)
 
